@@ -1,0 +1,36 @@
+name: Update Berita
+
+on:
+  schedule:
+    # Jalan tiap jam, di menit ke-0 (waktu UTC)
+    - cron: "0 * * * *"
+  workflow_dispatch: {}   # supaya bisa dijalankan manual dari tab Actions
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install rss-parser
+
+      - name: Ambil berita terbaru
+        run: node fetch-news.mjs
+
+      - name: Commit & push kalau ada perubahan
+        run: |
+          git config user.name "news-bot"
+          git config user.email "news-bot@users.noreply.github.com"
+          git add data/news.json
+          git diff --quiet --cached || git commit -m "Update berita otomatis"
+          git push

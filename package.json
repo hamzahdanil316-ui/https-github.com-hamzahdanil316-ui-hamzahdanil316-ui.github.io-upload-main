@@ -1,0 +1,8 @@
+{
+  "name": "kabar-terkini",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
